@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Dasbor Berkas Nikah Desa</title>
+<link href="https://fonts.googleapis.com/css2?family=Bitter:wght@500;700&family=Public+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+
+<style>
+:root{--bg:#f3f1ea;--panel:#fff;--ink:#1d2b24;--mut:#5f6f66;--line:#d9d6c8;--pri:#1f5c46;--pri-ink:#fff;--acc:#e0a526;--warn:#9a5b00;--warnbg:#fbeccb;--ok:#1f5c46;--okbg:#dcefe5;--bad:#a3341f;--badbg:#f6dcd6;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a16;--panel:#1b2620;--ink:#e8eee9;--mut:#9fb0a6;--line:#2f3d35;--pri:#5cb890;--pri-ink:#0d1a13;--acc:#e8b73f;--warn:#f0c46a;--warnbg:#3a2f12;--ok:#7fd0a8;--okbg:#18372a;--bad:#f09a88;--badbg:#3d1d17}}
+:root[data-theme="dark"]{--bg:#121a16;--panel:#1b2620;--ink:#e8eee9;--mut:#9fb0a6;--line:#2f3d35;--pri:#5cb890;--pri-ink:#0d1a13;--acc:#e8b73f;--warn:#f0c46a;--warnbg:#3a2f12;--ok:#7fd0a8;--okbg:#18372a;--bad:#f09a88;--badbg:#3d1d17}
+*,*:before,*:after{box-sizing:inherit}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 15px/1.5 "Public Sans",system-ui,sans-serif}
+h1,h2,h3{font-family:Bitter,Georgia,serif;margin:0;line-height:1.25}
+
+.app{display:grid;grid-template-columns:230px 1fr;min-height:100vh}
+aside{background:var(--pri);color:var(--pri-ink);padding:22px 16px;display:flex;flex-direction:column;gap:6px}
+aside h1{font-size:19px;margin-bottom:4px}
+aside p{margin:0 0 18px;font-size:13px;opacity:.85}
+.nav{background:none;border:0;color:inherit;text-align:left;padding:10px 12px;border-radius:6px;font:inherit;cursor:pointer;border-left:4px solid transparent}
+.nav[aria-current=true]{background:rgba(255,255,255,.16);border-left-color:var(--acc);font-weight:600}
+main{padding:26px clamp(14px,3vw,36px);min-width:0}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px}
+.top h2{font-size:24px}
+
+button.b,.b{font:600 14px "Public Sans",sans-serif;padding:9px 16px;border-radius:6px;border:1px solid var(--pri);background:var(--pri);color:var(--pri-ink);cursor:pointer}
+.b.o{background:transparent;color:var(--pri)}
+.b.d{background:transparent;color:var(--bad);border-color:var(--bad)}
+.b.s{padding:5px 10px;font-size:13px}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px;margin-bottom:22px}
+.st{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.st b{display:block;font:700 30px Bitter,serif;color:var(--pri)}
+.st span{color:var(--mut);font-size:13px}
+.panel{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px;margin-bottom:16px}
+.panel h3{font-size:17px;margin-bottom:12px}
+.tw{overflow-x:auto}
+table.l{width:100%;border-collapse:collapse;min-width:560px}
+.l th,.l td{text-align:left;padding:10px 8px;border-bottom:1px solid var(--line);vertical-align:middle}
+.l th{font-weight:600;color:var(--mut);font-size:13px}
+.tag{display:inline-block;padding:2px 8px;border-radius:99px;font-size:12px;font-weight:600;margin:1px 3px 1px 0}
+.tag.w{background:var(--warnbg);color:var(--warn)}.tag.k{background:var(--badbg);color:var(--bad)}.tag.g{background:var(--okbg);color:var(--ok)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px 14px}
+label{display:block;font-size:13px;color:var(--mut);font-weight:500}
+input,select{width:100%;margin-top:3px;padding:8px 10px;border:1px solid var(--line);border-radius:6px;background:var(--bg);color:var(--ink);font:inherit}
+.empty{color:var(--mut);padding:22px;text-align:center}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:14px}
+.tabs .b{padding:6px 12px}
+.tabs .b[aria-pressed=false]{background:transparent;color:var(--pri)}
+
+/* Bagian Cetak Dokumen - Kertas F4 (215mm x 330mm) dengan margin 2cm */
+.paper{background:#fff;color:#000;width:215mm;min-height:330mm;margin:0 auto;padding:15mm 20mm;font:11pt/1.25 "Times New Roman",Times,serif;border:1px solid var(--line);box-sizing:border-box;overflow:hidden;page-break-inside:avoid;break-inside:avoid}
+.paper p { margin: 0 0 4px 0; text-align: justify; }
+.paper h4{text-align:center;margin:6px 0 2px;font-size:11.5pt;}
+.model-box { float: right; border: 1.5px solid #000; padding: 2px 6px; font-weight: bold; font-size: 10pt; margin-bottom:6px; }
+.clear { clear: both; }
+
+.paper table { border-collapse: collapse; margin-bottom: 6px; width: 100%; page-break-inside: avoid; break-inside: avoid; }
+.paper td { padding: 1.5px 2px; vertical-align: top; }
+.paper .sg{display:flex;justify-content:space-between;margin-top:10px;text-align:center;page-break-inside:avoid;break-inside:avoid}
+.paper .sg>div{min-width:42%; page-break-inside:avoid; break-inside:avoid}
+.paper .pg{page-break-after:always;break-after:page;margin:15mm 0 0 0;padding:0;height:0}
+.hint{font-size:13px;color:var(--mut);margin:0 0 12px}
+
+#modal_overlay { display:none; position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(0,0,0,0.6); z-index:9999; align-items:center; justify-content:center; padding: 20px; }
+#modal_box { background:var(--panel); padding:24px; border-radius:8px; width:100%; max-width:400px; box-shadow: 0 10px 25px rgba(0,0,0,0.2); }
+#modal_msg { margin-top:0; font-size: 15px; line-height: 1.5; white-space: pre-wrap; }
+
+@media(max-width:860px){
+  .app{grid-template-columns:1fr}
+  aside{flex-direction:row;flex-wrap:wrap;align-items:center}
+  aside p{display:none}
+  aside h1{width:100%}
+  .paper{width:100%;padding:15mm;min-height:auto}
+}
+@media print{
+  @page{size:215mm 330mm;margin:0}
+  body{background:#fff}
+  aside,.top,.tabs,.hint,.noprint{display:none!important}
+  .app{display:block}
+  main{padding:0}
+  /* Cetak presisi F4 dengan margin bersih 2cm */
+  .paper{border:0;width:215mm;min-height:330mm;max-width:none;padding:15mm 20mm;font-size:11pt;box-shadow:none;page-break-after:always;break-after:page;line-height:1.25}
+  .paper .pg{page-break-after:always;break-after:page;border:0;margin:15mm 0 0 0;height:0}
+}
+</style>
+</head>
+<body>
+<div class="app">
+<aside>
+<h1>Berkas Nikah Desa</h1>
+<p>Dokumen N1-N6 Format Baru</p>
+<button class="nav" data-v="dash">Dasbor</button>
+<button class="nav" data-v="form">Data baru</button>
+<button class="nav" data-v="print">Cetak berkas</button>
+</aside>
+<main id="main"></main>
+</div>
+
+<div id="modal_overlay">
+  <div id="modal_box">
+    <p id="modal_msg"></p>
+    <div style="text-align:right; margin-top:24px;">
+      <button class="b o" id="modal_no" style="display:none; margin-right:8px;">Batal</button>
+      <button class="b" id="modal_ok">OK</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const KEY = 'na-desa-v2';
+
+/* ============================================================
+   PENYEMATAN API_URL
+   Ganti dengan URL Web App Google Apps Script Anda
+   (hasil Deploy, berakhiran /exec).
+   ============================================================ */
+const API_URL = 'https://script.google.com/macros/s/AKfycbxNizkYS7vyeovM51cbVc8NIK73rk7aSfxW9K-E6HUkvYgKPLaxxTWR9ges4AGftmof/exec';
+
+let recs = [], cur = null, view = 'dash', doc = 'N1';
+const apiUrl = API_URL.includes('GANTI_DENGAN') ? '' : API_URL.trim();
+let syncStatus = 'idle';
+
+try { recs = JSON.parse(localStorage.getItem(KEY) || '[]'); } catch(e) { recs = []; }
+const saveLocal = () => { try { localStorage.setItem(KEY, JSON.stringify(recs)); } catch(e){} };
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function customAlert(msg) {
+  return new Promise(res => {
+    $('#modal_msg').innerText = msg;
+    $('#modal_no').style.display = 'none';
+    $('#modal_overlay').style.display = 'flex';
+    $('#modal_ok').onclick = () => { $('#modal_overlay').style.display = 'none'; res(true); };
+  });
+}
+
+function customConfirm(msg) {
+  return new Promise(res => {
+    $('#modal_msg').innerText = msg;
+    $('#modal_no').style.display = 'inline-block';
+    $('#modal_overlay').style.display = 'flex';
+    $('#modal_ok').onclick = () => { $('#modal_overlay').style.display = 'none'; res(true); };
+    $('#modal_no').onclick = () => { $('#modal_overlay').style.display = 'none'; res(false); };
+  });
+}
+
+async function callApi(action, payload = {}) {
+  if (!apiUrl) return null;
+  syncStatus = 'syncing';
+  payload.action = action;
+  const jsonString = JSON.stringify(payload);
+
+  try {
+    // text/plain = "simple request": tidak memicu preflight CORS (Apps Script tidak mendukung OPTIONS)
+    const res = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: jsonString });
+    const json = await res.json();
+    syncStatus = (json && json.status === 'success') ? 'success' : 'error';
+    return json;
+  } catch (err) {
+    // Cadangan GET hanya untuk membaca data
+    if (action !== 'getAll') { syncStatus = 'error'; return null; }
+    try {
+      const resGet = await fetch(apiUrl + '?data=' + encodeURIComponent(jsonString));
+      const jsonGet = await resGet.json();
+      syncStatus = (jsonGet && jsonGet.status === 'success') ? 'success' : 'error';
+      return jsonGet;
+    } catch (getErr) {
+      syncStatus = 'error';
+      return null;
+    }
+  }
+}
+
+async function fetchFromCloud(manual = false) {
+  if (!apiUrl) {
+    if (manual) {
+      await customAlert('API_URL belum diisi.\n\nEdit file index.html lalu isi konstanta API_URL dengan Web App URL Apps Script.');
+    }
+    return;
+  }
+  syncStatus = 'syncing';
+  const res = await callApi('getAll');
+  if (res && res.status === 'success' && Array.isArray(res.data)) {
+    recs = res.data;
+    saveLocal();
+    if (view === 'dash') dash();
+    if (manual) await customAlert('✓ Sinkronisasi berhasil!\n' + recs.length + ' data berkas berhasil dimuat.');
+  } else {
+    if (manual) await customAlert('❌ Gagal menyinkronkan data.\nPeriksa kembali URL API atau koneksi internet.');
+  }
+}
+
+async function saveRecordToCloud(record) { saveLocal(); if (apiUrl) await callApi('save', { record }); }
+async function deleteRecordFromCloud(id) { saveLocal(); if (apiUrl) await callApi('delete', { id }); }
+
+const PF=[['nama','Nama lengkap dan alias'],['bin','Bin / Binti'],['nik','NIK'],['tmp','Tempat lahir'],['tgl','Tanggal lahir','date'],['wn','Kewarganegaraan'],['agama','Agama'],['kerja','Pekerjaan'],['alamat','Alamat']];
+const GR=[['p','Calon suami'],['w','Calon istri'],['pa','Ayah suami'],['pi','Ibu suami'],['wa','Ayah istri'],['wi','Ibu istri'],['pm','Mantan Istri Suami (Utk N6)'],['wm','Mantan Suami Istri (Utk N6)']];
+const META=[['desa','Desa/Kelurahan'],['kec','Kecamatan'],['kab','Kabupaten/Kota'],['kades','Nama Kepala Desa/Lurah'],['kadesNip','NIP Kepala Desa/Lurah'],['kadesJabatan','Jabatan Kepala Desa',['Definitif','Plt.','Pj.']],['nomor','Nomor surat'],['kota','Tempat surat dibuat (ttd)'],['tglsurat','Tanggal pembuatan surat','date'],['kua','KUA Kecamatan'],['akadTgl','Tanggal akad','date'],['akadJam','Pukul akad'],['akadTempat','Tempat akad'],['isbatTgl','Tgl Penetapan PA (Utk N3)','date']];
+
+const fmt=s=>{if(!s)return'...........................';const d=new Date(s+'T00:00:00');return d.toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'})};
+const D=(d,k,def)=>esc(d[k]||def||'...................................................');
+const T=(d,p)=>(d[p+'_tmp']||d[p+'_tgl']) ? `${D(d,p+'_tmp', '.........')}, ${fmt(d[p+'_tgl'])}` : '...................................................';
+const age=(d,p)=>{const t=d[p+'_tgl'];if(!t)return null;const b=new Date(t),n=d.akadTgl?new Date(d.akadTgl):new Date();let a=n.getFullYear()-b.getFullYear();if(n<new Date(n.getFullYear(),b.getMonth(),b.getDate()))a--;return a};
+const nm=r=>(r.data.p_nama||'(belum diisi)')+' & '+(r.data.w_nama||'(belum diisi)');
+const done=r=>{const ks=GR.filter(g=>!['pm','wm'].includes(g[0])).flatMap(g=>PF.map(f=>g[0]+'_'+f[0])).concat(META.map(m=>m[0]));return Math.round(ks.filter(k=>r.data[k]).length/ks.length*100)};
+
+function dash(){
+  const m=new Date().getMonth(),y=new Date().getFullYear();
+  const bln=recs.filter(r=>{const d=new Date(r.id);return d.getMonth()===m&&d.getFullYear()===y}).length;
+  $('#main').innerHTML=`<div class="top">
+    <h2>Dasbor</h2>
+    <div>
+      <button class="b o s" id="btn_sync">Sinkronkan</button>
+      <button class="b" id="nw">Buat berkas baru</button>
+    </div>
+  </div>
+  <div class="stats">
+    <div class="st"><b>${recs.length}</b><span>Total berkas</span></div>
+    <div class="st"><b>${bln}</b><span>Bulan ini</span></div>
+  </div>
+  <div class="panel">
+    <h3>Daftar berkas</h3>
+    ${recs.length?`<div class="tw"><table class="l"><tr><th>Pasangan</th><th>Akad</th><th>Kelengkapan</th><th></th></tr>${recs.map(r=>`<tr><td><b>${esc(nm(r))}</b></td><td>${r.data.akadTgl?fmt(r.data.akadTgl):'-'}</td><td>${done(r)}%</td><td style="white-space:nowrap; text-align:right;"><button class="b s" data-pr="${r.id}">Cetak</button> <button class="b o s" data-ed="${r.id}">Ubah</button> <button class="b d s" data-del="${r.id}">Hapus</button></td></tr>`).join('')}</table></div>`:'<div class="empty">Belum ada data.</div>'}
+  </div>
+  <p class="hint">Data dicetak sesuai petunjuk teknis KMA 473 Tahun 2020.</p>`;
+
+  $('#nw').onclick=()=>{cur={id:Date.now(),data:{wn_default:1,kab:'Sarolangun',p_st:'Jejaka',w_st:'Perawan'}};setV('form')};
+  $('#btn_sync').onclick=()=>fetchFromCloud(true);
+  document.querySelectorAll('[data-pr]').forEach(b=>b.onclick=()=>{cur=recs.find(r=>r.id==b.dataset.pr);setV('print')});
+  document.querySelectorAll('[data-ed]').forEach(b=>b.onclick=()=>{cur=recs.find(r=>r.id==b.dataset.ed);setV('form')});
+  document.querySelectorAll('[data-del]').forEach(b=>b.onclick=async()=>{
+    if(await customConfirm('Apakah Anda yakin ingin menghapus berkas pasangan ini?')){
+      const delId = b.dataset.del;
+      recs=recs.filter(r=>r.id!=delId);
+      await deleteRecordFromCloud(delId);
+      dash();
+    }
+  });
+}
+
+function inp(k,l,t,v){return `<label>${l}<input data-k="${k}" type="${t||'text'}" value="${esc(v||'')}"></label>`}
+function sel(k,l,opts,v){return `<label>${l}<select data-k="${k}">${opts.map(o=>`<option value="${esc(o)}"${v===o?' selected':''}>${o}</option>`).join('')}</select></label>`}
+
+function form(){
+  if(!cur)cur={id:Date.now(),data:{}};
+  const d=cur.data;
+  if(!d.p_st)d.p_st='Jejaka';
+  if(!d.w_st)d.w_st='Perawan';
+  if(!d.kadesJabatan)d.kadesJabatan='Definitif';
+  if(d.wn_default){delete d.wn_default;GR.forEach(g=>{d[g[0]+'_wn']='Indonesia';d[g[0]+'_agama']='Islam'})}
+  const st=(p,o)=>`<label>Status perkawinan<select data-k="${p}_st" id="select_${p}_st">${o.map(x=>`<option value="${esc(x)}"${d[p+'_st']===x?' selected':''}>${x}</option>`).join('')}</select></label>`;
+
+  $('#main').innerHTML=`<div class="top"><h2>Data pengantin & keluarga</h2><div><button class="b o" id="cx">Batal</button> <button class="b" id="sv">Simpan</button></div></div>
+  ${GR.map(g=>`<div class="panel"><h3>${g[1]}</h3><div class="grid">${PF.map(f=>inp(g[0]+'_'+f[0],f[1],f[2],d[g[0]+'_'+f[0]])).join('')}${g[0]==='pm'||g[0]==='wm'?inp(g[0]+'_tgl_mati','Tanggal Meninggal','date',d[g[0]+'_tgl_mati'])+inp(g[0]+'_tmp_mati','Tempat Meninggal','text',d[g[0]+'_tmp_mati']):''}${g[0]==='p'?st('p',['Jejaka','Duda','Beristri'])+`<div id="wrapper_p_istrike" style="${d['p_st']==='Beristri'?'':'display:none;'}">${inp('p_istrike','Istri ke- (Jika status Beristri)','number',d['p_istrike'])}</div>`:g[0]==='w'?st('w',['Perawan','Janda']):''}</div></div>`).join('')}
+  <div class="panel"><h3>Data administrasi</h3><div class="grid">
+    ${inp('desa','Desa/Kelurahan','text',d['desa'])}
+    ${inp('kec','Kecamatan','text',d['kec'])}
+    ${inp('kab','Kabupaten/Kota','text',d['kab'])}
+    ${inp('kades','Nama Kepala Desa/Lurah','text',d['kades'])}
+    ${inp('kadesNip','NIP Kepala Desa/Lurah','text',d['kadesNip'])}
+    ${sel('kadesJabatan','Jabatan Kepala Desa',['Definitif','Plt.','Pj.'],d['kadesJabatan'])}
+    ${inp('nomor','Nomor surat','text',d['nomor'])}
+    ${inp('kota','Tempat surat dibuat (ttd)','text',d['kota'])}
+    ${inp('tglsurat','Tanggal pembuatan surat','date',d['tglsurat'])}
+    ${inp('kua','KUA Kecamatan','text',d['kua'])}
+    ${inp('akadTgl','Tanggal akad','date',d['akadTgl'])}
+    ${inp('akadJam','Pukul akad','text',d['akadJam'])}
+    ${inp('akadTempat','Tempat akad','text',d['akadTempat'])}
+    ${inp('isbatTgl','Tgl Penetapan PA (Utk N3)','date',d['isbatTgl'])}
+  </div></div>`;
+
+  const stSelect = $('#select_p_st');
+  if (stSelect) {
+    stSelect.onchange = (e) => {
+      d['p_st'] = e.target.value;
+      const wrap = $('#wrapper_p_istrike');
+      if (wrap) {
+        wrap.style.display = (e.target.value === 'Beristri') ? 'block' : 'none';
+      }
+    };
+  }
+
+  document.querySelectorAll('[data-k]').forEach(e=>{
+    const update=()=>{d[e.dataset.k]=e.value};
+    e.oninput=update; e.onchange=update;
+  });
+  $('#cx').onclick=()=>setV('dash');
+  $('#sv').onclick=async()=>{
+    const idx = recs.findIndex(r=>r.id===cur.id);
+    if(idx > -1) recs[idx] = cur;
+    else recs.unshift(cur);
+    await saveRecordToCloud(cur);
+    setV('print');
+  };
+}
+
+const kopText = d => `
+<table style="font-weight:bold; margin-bottom:12px; width:100%;">
+  <tr><td style="width:230px">KANTOR DESA/KELURAHAN</td><td style="width:15px">:</td><td>${D(d,'desa').toUpperCase()}</td></tr>
+  <tr><td>KECAMATAN</td><td>:</td><td>${D(d,'kec').toUpperCase()}</td></tr>
+  <tr><td>KABUPATEN/KOTA</td><td>:</td><td>${D(d,'kab').toUpperCase()}</td></tr>
+</table>`;
+
+const kadesSignLabel = d => {
+  const jab = d.kadesJabatan || 'Definitif';
+  const prefix = jab === 'Definitif' ? 'Kepala Desa' : `${jab} Kepala Desa`;
+  return `${prefix} ${D(d,'desa')}`;
+};
+
+const kadesSignatureBlock = d => {
+  const nipVal = d.kadesNip ? `<br>NIP. ${esc(d.kadesNip)}` : '<br>NIP. ........................................';
+  return `${D(d,'kota')}, ${fmt(d.tglsurat)}<br>${kadesSignLabel(d)}<br><br><br><br><br><u><b>${D(d,'kades')}</b></u>${nipVal}`;
+};
+
+const PR_PDF = (d, p, bLabel, numStart=1) => `
+<table style="width:100%; border-collapse:collapse; margin-bottom:8px;">
+  <tr><td style="width:30px; vertical-align:top; text-align:right; padding-right:6px;">${numStart}.</td><td style="width:245px; vertical-align:top; white-space:nowrap;">Nama lengkap dan alias</td><td style="width:15px; vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_nama')}</td></tr>
+  <tr><td style="vertical-align:top; text-align:right; padding-right:6px;">${numStart+1}.</td><td style="vertical-align:top; white-space:nowrap;">${bLabel}</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_bin')}</td></tr>
+  <tr><td style="vertical-align:top; text-align:right; padding-right:6px;">${numStart+2}.</td><td style="vertical-align:top; white-space:nowrap;">Nomor Induk Kependudukan</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_nik')}</td></tr>
+  <tr><td style="vertical-align:top; text-align:right; padding-right:6px;">${numStart+3}.</td><td style="vertical-align:top; white-space:nowrap;">Tempat dan tanggal lahir</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${T(d,p)}</td></tr>
+  <tr><td style="vertical-align:top; text-align:right; padding-right:6px;">${numStart+4}.</td><td style="vertical-align:top; white-space:nowrap;">Kewarganegaraan</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_wn')}</td></tr>
+  <tr><td style="vertical-align:top; text-align:right; padding-right:6px;">${numStart+5}.</td><td style="vertical-align:top; white-space:nowrap;">Agama</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_agama')}</td></tr>
+  <tr><td style="vertical-align:top; text-align:right; padding-right:6px;">${numStart+6}.</td><td style="vertical-align:top; white-space:nowrap;">Pekerjaan</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_kerja')}</td></tr>
+  <tr><td style="vertical-align:top; text-align:right; padding-right:6px;">${numStart+7}.</td><td style="vertical-align:top; white-space:nowrap;">Alamat</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_alamat')}</td></tr>
+</table>`;
+
+const PR_N1 = (d, p, jk) => {
+  let statusSuamiStr = "-";
+  const stVal = d[p+'_st'];
+  if (jk === 'Laki-laki') {
+    if (stVal === 'Jejaka') {
+      statusSuamiStr = "<b>Jejaka</b>";
+    } else if (stVal === 'Duda') {
+      statusSuamiStr = "<b>Duda</b>";
+    } else if (stVal === 'Beristri') {
+      const istriKeVal = d['p_istrike'] ? `Istri ke-${esc(d['p_istrike'])}` : 'Istri ke-......';
+      statusSuamiStr = `<b>beristri ${istriKeVal}</b>`;
+    }
+  }
+
+  const statusIstriStr = (jk === 'Perempuan' && stVal) ? `<b>${stVal}</b>` : '-';
+
+  return `
+<table style="width:100%; border-collapse:collapse; margin-bottom:3px;">
+  <tr><td style="width:25px; vertical-align:top; text-align:right; padding-right:4px;">1.</td><td style="width:220px; vertical-align:top; white-space:nowrap;">Nama</td><td style="width:12px; vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_nama')}</td></tr>
+  <tr><td style="vertical-align:top; text-align:right; padding-right:4px;">2.</td><td style="vertical-align:top; white-space:nowrap;">Nomor Induk Kependudukan (NIK)</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_nik')}</td></tr>
+  <tr><td style="vertical-align:top; text-align:right; padding-right:4px;">3.</td><td style="vertical-align:top; white-space:nowrap;">Jenis Kelamin</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${jk}</td></tr>
+  <tr><td style="vertical-align:top; text-align:right; padding-right:4px;">4.</td><td style="vertical-align:top; white-space:nowrap;">Tempat dan tanggal lahir</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${T(d,p)}</td></tr>
+  <tr><td style="vertical-align:top; text-align:right; padding-right:4px;">5.</td><td style="vertical-align:top; white-space:nowrap;">Kewarganegaraan</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_wn')}</td></tr>
+  <tr><td style="vertical-align:top; text-align:right; padding-right:4px;">6.</td><td style="vertical-align:top; white-space:nowrap;">Agama</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_agama')}</td></tr>
+  <tr><td style="vertical-align:top; text-align:right; padding-right:4px;">7.</td><td style="vertical-align:top; white-space:nowrap;">Pekerjaan</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_kerja')}</td></tr>
+  <tr><td style="vertical-align:top; text-align:right; padding-right:4px;">8.</td><td style="vertical-align:top; white-space:nowrap;">Alamat</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_alamat')}</td></tr>
+  <tr><td style="vertical-align:top; text-align:right; padding-right:4px;">9.</td><td style="vertical-align:top; white-space:nowrap;">Status pernikahan</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;"></td></tr>
+  <tr><td></td><td colspan="3">
+    <table style="width:100%; margin-top:0px; margin-bottom:1px;">
+      <tr><td style="width:110px; vertical-align:top;">a. Laki-laki</td><td style="width:12px; text-align:center;">:</td><td>${jk==='Laki-laki'?statusSuamiStr:'-'}</td></tr>
+      <tr><td style="vertical-align:top;">b. Perempuan</td><td style="width:12px; text-align:center;">:</td><td>${statusIstriStr}</td></tr>
+    </table>
+  </td></tr>
+</table>`;
+};
+
+const Parent_N1 = (d, p) => `
+<table style="width:100%; margin-bottom:2px;">
+  <tr><td style="width:25px; vertical-align:top;"></td><td style="width:220px; vertical-align:top; white-space:nowrap;">Nama Lengkap dan alias</td><td style="width:12px; vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_nama')}</td></tr>
+  <tr><td style="vertical-align:top;"></td><td style="vertical-align:top; white-space:nowrap;">Nomor Induk Kependudukan (NIK)</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_nik')}</td></tr>
+  <tr><td style="vertical-align:top;"></td><td style="vertical-align:top; white-space:nowrap;">Tempat dan tanggal lahir</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${T(d,p)}</td></tr>
+  <tr><td style="vertical-align:top;"></td><td style="vertical-align:top; white-space:nowrap;">Kewarganegaraan</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_wn')}</td></tr>
+  <tr><td style="vertical-align:top;"></td><td style="vertical-align:top; white-space:nowrap;">Agama</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_agama')}</td></tr>
+  <tr><td style="vertical-align:top;"></td><td style="vertical-align:top; white-space:nowpx;">Pekerjaan</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_kerja')}</td></tr>
+  <tr><td style="vertical-align:top;"></td><td style="vertical-align:top; white-space:nowrap;">Alamat</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_alamat')}</td></tr>
+</table>`;
+
+const N1_tpl = (d, p, jk, pa, pi) => `
+<div style="float: left; font-size: 9.5pt; line-height: 1.1; margin-bottom: 8px;">
+  Lampiran V<br>
+  Keputusan Dirjen Bimas Islam No. 473 Tahun 2020<br><br><br>
+</div>
+<div class="model-box">Model N1</div>
+<div class="clear"></div>
+${kopText(d)}
+<h4 style="text-decoration:underline; font-size:11pt; margin:4px 0; text-align:center;">PENGANTAR NIKAH</h4>
+<div style="text-align:center; margin-bottom:6px; font-size:10pt;">Nomor: ${D(d,'nomor')}</div>
+<p style="margin-bottom:2px;">Yang bertanda tangan di bawah ini menjelaskan dengan sesungguhnya bahwa:</p>
+${PR_N1(d, p, jk)}
+<p style="margin:2px 0 1px 0;">Adalah benar anak dari pernikahan seorang pria:</p>
+${Parent_N1(d, pa)}
+<p style="margin:2px 0 1px 0;">dengan seorang wanita:</p>
+${Parent_N1(d, pi)}
+<p style="margin-top:4px; margin-bottom:6px;">Demikian, Surat pengantar ini dibuat dengan mengingat sumpah jabatan dan untuk dipergunakan sebagaimana mestinya.</p>
+<div class="sg" style="margin-top:8px;">
+  <div></div>
+  <div>${D(d,'kota')}, ${fmt(d.tglsurat)}<br>${kadesSignLabel(d)}<br><br><br><br><br><u><b>${D(d,'kades')}</b></u><br>${d.kadesNip ? 'NIP. ' + esc(d.kadesNip) : ''}</div>
+</div>`;
+
+const N2_tpl = (d) => `
+<div style="float: left; font-size: 10.5pt; line-height: 1.2; margin-bottom: 16px;">
+  Lampiran VI<br>
+  Keputusan Dirjen Bimas Islam No. 473 Tahun 2020<br><br><br>
+</div>
+<div class="model-box">Model N2</div>
+<div class="clear"></div>
+<table style="width:100%; margin-bottom:15px;">
+  <tr><td style="width:80px">Perihal</td><td style="width:10px">:</td><td>Permohonan kehendak nikah</td><td style="text-align:right">${D(d,'kota')}, ${fmt(d.tglsurat)}</td></tr>
+</table>
+<p>Kepada yth,<br>Kepala KUA Kecamatan /PPN LN ${D(d,'kua')}<br>di ${D(d,'kota')}</p>
+<p style="margin-top:15px">Dengan hormat, kami mengajukan permohonan kehendak nikah untuk atas nama:</p>
+<table style="margin-left:20px; width:90%; margin-bottom:15px;">
+  <tr><td style="width:150px">Calon suami</td><td style="width:15px">:</td><td>${D(d,'p_nama')}</td></tr>
+  <tr><td>Calon istri</td><td>:</td><td>${D(d,'w_nama')}</td></tr>
+</table>
+<p>Bersama ini kami sampaikan surat-surat yang diperlukan untuk diperiksa sebagai berikut:</p>
+<ol style="margin-top:8px; margin-bottom:15px; padding-left:25px;">
+  <li>Surat pengantar nikah dari Desa/Kelurahan</li>
+  <li>Persetujuan calon mempelai</li>
+  <li>Fotokopi KTP</li>
+  <li>Fotokopi akte kelahiran</li>
+  <li>Fotokopi kartu keluarga</li>
+  <li>Paspoto 2x3 = 3 lembar berlatar belakang biru</li>
+  <li>.......................................................................</li>
+  <li>.......................................................................</li>
+</ol>
+<p>Demikian permohonan ini kami sampaikan, kiranya dapat diperiksa, dihadiri, dan dicatat sesuai dengan ketentuan peraturan perundang-undangan.</p>
+<div class="sg" style="margin-top:20px;">
+  <div>Diterima Tanggal .........................<br>Yang menerima,<br>Kepala KUA/PPN Luar Negeri<br><br><br><br><br>...................................................</div>
+  <div><br>Wassalam,<br>Pemohon<br><br><br><br><br><u>${D(d,'p_nama')}</u></div>
+</div>`;
+
+const N3_tpl = (d) => `
+<div style="float: left; font-size: 10.5pt; line-height: 1.2; margin-bottom: 16px;">
+  Lampiran VII<br>
+  Keputusan Dirjen Bimas Islam No. 473 Tahun 2020<br><br><br>
+</div>
+<div class="model-box">Model N3</div>
+<div class="clear"></div>
+<table style="width:100%; margin-bottom:15px;">
+  <tr><td style="width:80px">Perihal</td><td style="width:10px">:</td><td>Permohonan pencatatan isbat</td><td style="text-align:right">${D(d,'kota')}, ${fmt(d.tglsurat)}</td></tr>
+</table>
+<p>Kepada yth,<br>Kepala KUA Kecamatan /PPN LN ${D(d,'kua')}<br>di ${D(d,'kota')}</p>
+<p style="margin-top:15px">Dengan hormat, kami mengajukan permohonan pencatatan isbat untuk atas nama:</p>
+<table style="margin-left:20px; width:90%; margin-bottom:15px;">
+  <tr><td style="width:250px">Suami</td><td style="width:15px">:</td><td>${D(d,'p_nama')}</td></tr>
+  <tr><td>Istri</td><td>:</td><td>${D(d,'w_nama')}</td></tr>
+  <tr><td>Tanggal penetapan Pengadilan Agama</td><td>:</td><td>${d.isbatTgl ? fmt(d.isbatTgl) : '.......................................................'}</td></tr>
+</table>
+<p>Bersama ini kami sampaikan surat-surat yang diperlukan untuk diperiksa sebagai berikut:</p>
+<ol style="margin-top:8px; margin-bottom:15px; padding-left:25px;">
+  <li>Putusan Isbat</li>
+  <li>Fotokopi KTP</li>
+  <li>Fotokopi kartu keluarga</li>
+  <li>Pasfoto 2x3 = 3 lembar berlatar belakang biru</li>
+  <li>.......................................................................</li>
+  <li>.......................................................................</li>
+</ol>
+<p>Demikian permohonan ini kami sampaikan, kiranya dapat diperiksa, dihadiri, dan dicatat sesuai dengan ketentuan peraturan perundang-undangan.</p>
+<div class="sg" style="margin-top:20px;">
+  <div>Diterima Tanggal .........................<br>Yang menerima,<br>Kepala KUA/PPN Luar Negeri<br><br><br><br><br>...................................................</div>
+  <div><br>Wassalam,<br>Pemohon<br><br><br><br><br><u>${D(d,'p_nama')}</u></div>
+</div>`;
+
+const N4_tpl = (d) => `
+<div style="float: left; font-size: 10.5pt; line-height: 1.2; margin-bottom: 16px;">
+  Lampiran VIII<br>
+  Keputusan Dirjen Bimas Islam No. 473 Tahun 2020<br><br><br>
+</div>
+<div class="model-box">Model N4</div>
+<div class="clear"></div>
+<h4 style="margin-bottom:15px; font-size:12pt;">FORMULIR PERSETUJUAN CALON PENGANTIN<br><br>SURAT PERSETUJUAN PENGANTIN</h4>
+<p style="margin-bottom:6px;">Yang bertanda tangan di bawah ini:</p>
+<p style="margin-bottom:4px; font-weight:bold;">A. Calon suami:</p>
+${PR_PDF(d, 'p', 'Bin')}
+<p style="margin-bottom:4px; font-weight:bold;">B. Calon Istri:</p>
+${PR_PDF(d, 'w', 'Binti')}
+<p style="margin-top:10px; margin-bottom:6px;">Menyatakan dengan sesungguhnya bahwa atas dasar suka rela, dengan kesadaran sendiri, tanpa ada paksaan dari siapapun juga, setuju untuk melangsungkan pernikahan.</p>
+<p style="margin-bottom:20px;">Demikian Surat persetujuan ini di buat untuk digunakan seperlunya.</p>
+<div class="sg" style="margin-top:20px;">
+  <div><br>Calon Suami<br><br><br><br><br><u>${D(d,'p_nama')}</u></div>
+  <div>${D(d,'kota')}, ${fmt(d.tglsurat)}<br>Calon Istri<br><br><br><br><br><u>${D(d,'w_nama')}</u></div>
+</div>`;
+
+const PR_N5_A_B = (d, p, bLabel, prefix) => `
+<table style="width:100%; border-collapse:collapse; margin-bottom:6px;">
+  <tr><td style="width:25px; vertical-align:top;">${prefix}</td><td style="width:30px; vertical-align:top; text-align:right; padding-right:6px;">1.</td><td style="width:215px; vertical-align:top; white-space:nowrap;">Nama lengkap dan alias</td><td style="width:15px; vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_nama')}</td></tr>
+  <tr><td style="vertical-align:top;"></td><td style="vertical-align:top; text-align:right; padding-right:6px;">2.</td><td style="vertical-align:top; white-space:nowrap;">${bLabel}</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_bin')}</td></tr>
+  <tr><td style="vertical-align:top;"></td><td style="vertical-align:top; text-align:right; padding-right:6px;">3.</td><td style="vertical-align:top; white-space:nowrap;">Nomor Induk Kependudukan</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_nik')}</td></tr>
+  <tr><td style="vertical-align:top;"></td><td style="vertical-align:top; text-align:right; padding-right:6px;">4.</td><td style="vertical-align:top; white-space:nowrap;">Tempat dan tanggal lahir</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${T(d,p)}</td></tr>
+  <tr><td style="vertical-align:top;"></td><td style="vertical-align:top; text-align:right; padding-right:6px;">5.</td><td style="vertical-align:top; white-space:nowrap;">Kewarganegaraan</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_wn')}</td></tr>
+  <tr><td style="vertical-align:top;"></td><td style="vertical-align:top; text-align:right; padding-right:6px;">6.</td><td style="vertical-align:top; white-space:nowrap;">Agama</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_agama')}</td></tr>
+  <tr><td style="vertical-align:top;"></td><td style="vertical-align:top; text-align:right; padding-right:6px;">7.</td><td style="vertical-align:top; white-space:nowrap;">Pekerjaan</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_kerja')}</td></tr>
+  <tr><td style="vertical-align:top;"></td><td style="vertical-align:top; text-align:right; padding-right:6px;">8.</td><td style="vertical-align:top; white-space:nowrap;">Alamat</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_alamat')}</td></tr>
+</table>`;
+
+const PR_N5_Anak_Mantu = (d, p, bLabel) => `
+<table style="width:100%; border-collapse:collapse; margin-bottom:8px;">
+  <tr><td style="width:30px; vertical-align:top; text-align:right; padding-right:6px;">1.</td><td style="width:245px; vertical-align:top; white-space:nowrap;">Nama lengkap dan alias</td><td style="width:15px; vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_nama')}</td></tr>
+  <tr><td style="vertical-align:top; text-align:right; padding-right:6px;">2.</td><td style="vertical-align:top; white-space:nowrap;">${bLabel}</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_bin')}</td></tr>
+  <tr><td style="vertical-align:top; text-align:right; padding-right:6px;">3.</td><td style="vertical-align:top; white-space:nowrap;">Nomor Induk Kependudukan</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_nik')}</td></tr>
+  <tr><td style="vertical-align:top; text-align:right; padding-right:6px;">4.</td><td style="vertical-align:top; white-space:nowrap;">Tempat dan tanggal lahir</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${T(d,p)}</td></tr>
+  <tr><td style="vertical-align:top; text-align:right; padding-right:6px;">5.</td><td style="vertical-align:top; white-space:nowrap;">Kewarganegaraan</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_wn')}</td></tr>
+  <tr><td style="vertical-align:top; text-align:right; padding-right:6px;">6.</td><td style="vertical-align:top; white-space:nowrap;">Agama</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_agama')}</td></tr>
+  <tr><td style="vertical-align:top; text-align:right; padding-right:6px;">7.</td><td style="vertical-align:top; white-space:nowrap;">Pekerjaan</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_kerja')}</td></tr>
+  <tr><td style="vertical-align:top; text-align:right; padding-right:6px;">8.</td><td style="vertical-align:top; white-space:nowrap;">Alamat</td><td style="vertical-align:top; text-align:center;">:</td><td style="vertical-align:top;">${D(d,p+'_alamat')}</td></tr>
+</table>`;
+
+const N5_single = (d, anak, anakJK, ayah, ibu, mantu, mantuJK) => `
+<div style="float: left; font-size: 10.5pt; line-height: 1.2; margin-bottom: 16px;">
+  Lampiran IX<br>
+  Keputusan Dirjen Bimas Islam No. 473 Tahun 2020<br><br><br>
+</div>
+<div class="model-box">Model N5</div>
+<div class="clear"></div>
+<h4 style="margin-bottom:10px; font-size:12pt;">FORMULIR SURAT IZIN ORANG TUA</h4>
+<h4 style="text-decoration:underline; font-weight:normal; margin-bottom:12px; font-size:11.5pt;">SURAT IZIN ORANG TUA</h4>
+<p style="margin-bottom:6px;">Yang bertanda tangan di bawah ini:</p>
+${PR_N5_A_B(d, ayah, 'Bin', 'A.')}
+${PR_N5_A_B(d, ibu, 'Binti', 'B.')}
+<p style="margin-top:6px; margin-bottom:6px;">adalah ayah dan ibu kandung/wali/pengampu dari :</p>
+${PR_N5_Anak_Mantu(d, anak, 'Bin /Binti')}
+<p style="margin-top:6px; margin-bottom:6px;">Memberikan izin kepada anak kami untuk melakukan pernikahan dengan:</p>
+${PR_N5_Anak_Mantu(d, mantu, 'Bin/Binti')}
+<p style="margin-top:10px; margin-bottom:15px;">Demikian Surat izin ini di buat dengan kesadaran tanpa ada paksaan dari siapapun dan untuk digunakan seperlunya.</p>
+<div class="sg" style="margin-top:20px;">
+  <div><br>Ayah/wali/pengampu<br><br><br><br><br>..............................................</div>
+  <div>${D(d,'kota', '....................')}, ${d.tglsurat ? fmt(d.tglsurat) : '....... ...............20.....'}<br>Ibu/wali/pengampu<br><br><br><br><br>..............................................</div>
+</div>`;
+
+const N6_single = (d, role) => {
+  const m = role === 'p' ? 'pm' : 'wm';
+  const mJK = role === 'p' ? 'Binti' : 'Bin';
+  return `
+<div style="float: left; font-size: 9.5pt; line-height: 1.1; margin-bottom: 8px;">
+  Lampiran X<br>
+  Keputusan Dirjen Bimas Islam No. 473 Tahun 2020<br><br><br>
+</div>
+<div class="model-box">Model N6</div>
+<div class="clear"></div>
+${kopText(d)}
+<h4 style="text-decoration:underline; font-size:12pt; margin:10px 0;">SURAT KETERANGAN KEMATIAN SUAMI/ISTRI</h4>
+<div style="text-align:center; margin-bottom:15px; font-size:11pt;">Nomor: ${D(d,'nomor')}</div>
+<p style="margin-bottom:6px;">Yang bertanda tangan di bawah ini menerangkan dengan sesungguhnya bahwa:</p>
+<p style="margin-bottom:4px; font-weight:bold;">A.</p>
+${PR_PDF(d, m, mJK)}
+<p style="margin: 10px 0;">Telah meninggal dunia pada tanggal ${d[m+'_tgl_mati'] ? fmt(d[m+'_tgl_mati']) : '........................................................................................'}<br>Di ${D(d, m+'_tmp_mati', '............................................................................................................................................')}</p>
+<p style="margin-bottom:6px;">Yang bersangkutan adalah suami/istri*) dari:</p>
+<p style="margin-bottom:4px; font-weight:bold;">B.</p>
+${PR_PDF(d, role, role === 'p' ? 'Bin' : 'Binti')}
+<p style="margin-top:10px; margin-bottom:15px;">Demikian surat keterangan ini dibuat dengan mengingat sumpah jabatan dan untuk dipergunakan seperlunya.</p>
+<div class="sg" style="margin-top:20px; align-items:flex-end;">
+  <div style="text-align:left; font-size:10.5pt;">*) coret yang tidak perlu<br>**)nama terang</div>
+  <div>${D(d,'kota')}, ${fmt(d.tglsurat)}<br>${kadesSignLabel(d)}<br><br><br><br><br><u><b>${D(d,'kades')}</b></u><br>${d.kadesNip ? 'NIP. ' + esc(d.kadesNip) + '<br>' : ''}**)</div>
+</div>`;
+};
+
+const DOCS={
+  N1:d=>N1_tpl(d,'p','Laki-laki','pa','pi')+'<div class="pg"></div><div style="padding-top: 15mm;">'+N1_tpl(d,'w','Perempuan','wa','wi')+'</div>',
+  N2:d=>N2_tpl(d),
+  N3:d=>N3_tpl(d),
+  N4:d=>N4_tpl(d),
+  N5:d=>N5_single(d,'p','Laki-laki','pa','pi','w','Perempuan')+'<div class="pg"></div><div style="padding-top: 15mm;">'+N5_single(d,'w','Perempuan','wa','wi','p','Laki-laki')+'</div>',
+  N6:d=>N6_single(d,'p')+'<div class="pg"></div>'+N6_single(d,'w')
+};
+const LBL={N1:'N1 Pengantar Nikah',N2:'N2 Kehendak Nikah',N3:'N3 Isbat',N4:'N4 Persetujuan',N5:'N5 Izin Ortu',N6:'N6 Kematian'};
+
+function prt(){
+  if(!cur){$('#main').innerHTML='<div class="top"><h2>Cetak berkas</h2></div><div class="panel empty">Pilih berkas dari dasbor lebih dulu.</div>';return}
+  $('#main').innerHTML=`<div class="top"><h2>${esc(nm(cur))}</h2><div><button class="b o" onclick="form()">Ubah data</button> <button class="b" onclick="window.print()">Cetak</button></div></div>
+  <div class="tabs">${Object.keys(LBL).map(k=>`<button class="b" data-d="${k}" aria-pressed="${k===doc}">${LBL[k]}</button>`).join('')}</div>
+  <p class="hint">Beberapa form (N1, N5, N6) berisi 2 halaman (suami & istri). Titik-titik dapat ditulis tangan setelah dicetak.</p>
+  <div class="paper">${DOCS[doc](cur.data)}</div>`;
+  document.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{doc=b.dataset.d;prt()});
+}
+
+function setV(v){
+  view=v;
+  document.querySelectorAll('.nav').forEach(n=>n.setAttribute('aria-current',n.dataset.v===v));
+  ({dash,form,print:prt})[v]();
+  window.scrollTo(0,0);
+}
+
+document.querySelectorAll('.nav').forEach(n=>n.onclick=()=>{
+  if(n.dataset.v==='form'&&!cur) cur={id:Date.now(),data:{p_st:'Jejaka',w_st:'Perawan'}};
+  setV(n.dataset.v);
+});
+
+if (apiUrl) fetchFromCloud();
+setV('dash');
+</script>
+</body>
+</html>
