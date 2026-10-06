@@ -155,13 +155,11 @@ async function callApi(action, payload = {}) {
   const jsonString = JSON.stringify(payload);
 
   try {
-    // text/plain = "simple request": tidak memicu preflight CORS (Apps Script tidak mendukung OPTIONS)
     const res = await fetch(apiUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: jsonString });
     const json = await res.json();
     syncStatus = (json && json.status === 'success') ? 'success' : 'error';
     return json;
   } catch (err) {
-    // Cadangan GET hanya untuk membaca data
     if (action !== 'getAll') { syncStatus = 'error'; return null; }
     try {
       const resGet = await fetch(apiUrl + '?data=' + encodeURIComponent(jsonString));
@@ -397,7 +395,7 @@ ${Parent_N1(d, pi)}
   <div>${D(d,'kota')}, ${fmt(d.tglsurat)}<br>${kadesSignLabel(d)}<br><br><br><br><br><u><b>${D(d,'kades')}</b></u><br>${d.kadesNip ? 'NIP. ' + esc(d.kadesNip) : ''}</div>
 </div>`;
 
-const N2_tpl = (d) => `
+const N2_tpl = (d, role) => `
 <div style="float: left; font-size: 10.5pt; line-height: 1.2; margin-bottom: 16px;">
   Lampiran VI<br>
   Keputusan Dirjen Bimas Islam No. 473 Tahun 2020<br><br><br>
@@ -427,7 +425,7 @@ const N2_tpl = (d) => `
 <p>Demikian permohonan ini kami sampaikan, kiranya dapat diperiksa, dihadiri, dan dicatat sesuai dengan ketentuan peraturan perundang-undangan.</p>
 <div class="sg" style="margin-top:20px;">
   <div>Diterima Tanggal .........................<br>Yang menerima,<br>Kepala KUA/PPN Luar Negeri<br><br><br><br><br>...................................................</div>
-  <div><br>Wassalam,<br>Pemohon<br><br><br><br><br><u>${D(d,'p_nama')}</u></div>
+  <div><br>Wassalam,<br>Pemohon<br><br><br><br><br><u>${D(d, role + '_nama')}</u></div>
 </div>`;
 
 const N3_tpl = (d) => `
@@ -557,11 +555,11 @@ ${PR_PDF(d, role, role === 'p' ? 'Bin' : 'Binti')}
 
 const DOCS={
   N1:d=>N1_tpl(d,'p','Laki-laki','pa','pi')+'<div class="pg"></div><div style="padding-top: 15mm;">'+N1_tpl(d,'w','Perempuan','wa','wi')+'</div>',
-  N2:d=>N2_tpl(d),
+  N2:d=>N2_tpl(d, 'p')+'<div class="pg"></div><div style="padding-top: 15mm;">'+N2_tpl(d, 'w')+'</div>',
   N3:d=>N3_tpl(d),
   N4:d=>N4_tpl(d),
   N5:d=>N5_single(d,'p','Laki-laki','pa','pi','w','Perempuan')+'<div class="pg"></div><div style="padding-top: 15mm;">'+N5_single(d,'w','Perempuan','wa','wi','p','Laki-laki')+'</div>',
-  N6:d=>N6_single(d,'p')+'<div class="pg"></div>'+N6_single(d,'w')
+  N6:d=>N6_single(d,'p')+'<div class="pg"></div><div style="padding-top: 15mm;">'+N6_single(d,'w')+'</div>'
 };
 const LBL={N1:'N1 Pengantar Nikah',N2:'N2 Kehendak Nikah',N3:'N3 Isbat',N4:'N4 Persetujuan',N5:'N5 Izin Ortu',N6:'N6 Kematian'};
 
@@ -569,7 +567,7 @@ function prt(){
   if(!cur){$('#main').innerHTML='<div class="top"><h2>Cetak berkas</h2></div><div class="panel empty">Pilih berkas dari dasbor lebih dulu.</div>';return}
   $('#main').innerHTML=`<div class="top"><h2>${esc(nm(cur))}</h2><div><button class="b o" onclick="form()">Ubah data</button> <button class="b" onclick="window.print()">Cetak</button></div></div>
   <div class="tabs">${Object.keys(LBL).map(k=>`<button class="b" data-d="${k}" aria-pressed="${k===doc}">${LBL[k]}</button>`).join('')}</div>
-  <p class="hint">Beberapa form (N1, N5, N6) berisi 2 halaman (suami & istri). Titik-titik dapat ditulis tangan setelah dicetak.</p>
+  <p class="hint">Beberapa form (N1, N2, N5, N6) berisi 2 halaman (suami & istri). Titik-titik dapat ditulis tangan setelah dicetak.</p>
   <div class="paper">${DOCS[doc](cur.data)}</div>`;
   document.querySelectorAll('[data-d]').forEach(b=>b.onclick=()=>{doc=b.dataset.d;prt()});
 }
